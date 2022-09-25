@@ -1,5 +1,4 @@
 repeat task.wait(0.1) until game:IsLoaded()
-_G.autoload = game.Players.LocalPlayer.Name
 
 getgenv().Star = "⭐"
 getgenv().Danger = "⚠️"
