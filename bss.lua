@@ -7,7 +7,7 @@ getgenv().ExploitSpecific = "ðŸ“œ"
 
 -- API CALLS
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Narnia1337/hi/main/library.lua"))()
+local library = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/cccomplex/ui-/main/.lua"))();
 getgenv().api = loadstring(game:HttpGet("https://raw.githubusercontent.com/Narnia1337/hi/main/api.lua"))()
 local bssapi = loadstring(game:HttpGet("https://raw.githubusercontent.com/Narnia1337/hi/main/bssapi.lua"))()
 local httpreq = (syn and syn.request) or http_request or (http and http.request) or request
@@ -2065,7 +2065,7 @@ local Config = {
     Color = Color3.fromRGB(39, 133, 11),
     Keybind = Enum.KeyCode.Semicolon
 }
-local Window = library:CreateWindow(Config, game:GetService("CoreGui"))
+local Window = :CreateWindow(Config, game:GetService("CoreGui"))
 
 local guiElements = {
     toggles = {},
