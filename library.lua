@@ -507,155 +507,118 @@ function Library:Create(ScriptName)
                 end)
             end
     
-            function SFeatures:Slider(SliderName, Callback, Options)
-                local Min = 0
-                local Max = 1
-                local Precise = false
-                local Enabled = false
-    
-                local Frame = Create("Frame", SectionContainer, {
-                    Name = SliderName,
-                    Size = UDim2.new(0.95, 0, 0, 25),
-                    BackgroundTransparency = 1,
-                })
-                
-                local SliderText = Create("TextLabel", Frame, {
-                    Name = "SliderText",
-                    AnchorPoint = Vector2.new(0.5, 0.5),
-                    Size = UDim2.new(0.75, 0, 1, 0),
-                    Position = UDim2.new(0.385, 0, 0.5, 0),
-                    BackgroundTransparency = 1,
-                    Text = SliderName,
-                    TextColor3 = Color3.fromRGB(255, 255, 255),
-                    Font = Enum.Font["Gotham"],
-                    TextSize = 12,
-                    TextXAlignment = Enum.TextXAlignment["Left"],
-                })
-                
-                local SliderFrame = Create("Frame", Frame, {
-                    Name = "SliderFrame",
-                    Size = UDim2.new(1, 0, 1, 0),
-                    Position = UDim2.new(-0.01, 0, 0, 0),
-                    BackgroundTransparency = 1,
-                })
-    
-                Insert:UIListLayout(SliderFrame, "Horizontal_Right", 0)
-    
-                local Slider = Create("Frame", SliderFrame, {
-                    Name = "Slider",
-                    Size = UDim2.new(0.4, 0, 0, 15),
-                    BackgroundColor3 = Color3.fromRGB(25, 25, 25),
-                    ClipsDescendants = true,
-                })
-    
-                local SliderValueText = Create("TextLabel", Slider, {
-                    Name = "SliderValueText",
-                    AnchorPoint = Vector2.new(0.5, 0.5),
-                    Size = UDim2.new(0, 10, 0, 10),
-                    Position = UDim2.new(0, 10, 0.5, 0),
-                    BackgroundTransparency = 1,
-                    TextColor3 = Color3.fromRGB(255, 255, 255),
-                    TextSize = 10,
-                    Text = Min,
-                    Font = Enum.Font["Gotham"],
-                    TextXAlignment = Enum.TextXAlignment["Left"]
-                })
-                
-                Insert:UICorner(Slider)
-                Insert:UIStroke(Slider, ColorIncrement * 2)
-    
-                local SliderFrameDetail = Create("Frame", Slider, {
-                    Name = "SliderFrameDetail",
-                    Size = UDim2.new(0, 0, 1, 0),
-                    BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-                    BorderColor3 = Color3.fromRGB(255, 255, 255),
-                    BorderSizePixel = 0,
-                    ClipsDescendants = true,
-                })
-                
-                local SliderFrameDetailValueText = Create("TextLabel", SliderFrameDetail, {
-                    Name = "SliderFrameDetailValueText",
-                    AnchorPoint = Vector2.new(0.5, 0.5),
-                    Size = UDim2.new(0, 10, 0, 10),
-                    Position = UDim2.new(0, 10, 0.5, 0),
-                    BackgroundTransparency = 1,
-                    TextColor3 = Color3.fromRGB(25, 25, 25),
-                    TextSize = 10,
-                    Text = Min,
-                    Font = Enum.Font["Gotham"],
-                    TextXAlignment = Enum.TextXAlignment["Left"]
-                })
-                
-                Insert:UICorner(SliderFrameDetail)
-    
-                local SliderButton = Create("TextButton", Slider, {
-                    Name = "SliderButton",
-                    Size = UDim2.new(1, 0, 1, 0),
-                    BackgroundTransparency = 1,
-                    Text = "",
-                })
-    
-                if Options then
-                    if Options.Min then
-                        Min = Options.Min
-                    end
-                    if Options.Max then
-                        Max = Options.Max
-                    end
-                    if Options.Precise then
-                        Precise = Options.Precise
-                    end
-                    if Options.Default then
-                        if Precise then
-                            Options.Default = tonumber(string.format("%.03f", Options.Default))
-                            local Scale = math.clamp((Options.Default - Min) / (Max - Min), 0, 1)
-                            SliderFrameDetail.Size = UDim2.new(Scale, 0, 0.98, 0)
-                            SliderValueText.Text = Options.Default
-                            SliderFrameDetailValueText.Text = Options.Default
-                        else
-                            Options.Default = math.round(Options.Default)
-                            local Scale = math.clamp((Options.Default - Min) / (Max - Min), 0, 1)
-                            SliderFrameDetail.Size = UDim2.new(Scale, 0, 0.98, 0)
-                            SliderValueText.Text = Options.Default
-                            SliderFrameDetailValueText.Text = Options.Default
-                        end
-                    end
+            function SFeatures:Slider(Name, Min, Max, Default, Precise, Callback)
+				local DefaultLocal = Default or 50
+				local SliderInit = {}
+				local Slider = Folder.Slider:Clone()
+				Slider.Name = Name .. " S"
+				Slider.Parent = Section.Container
+				
+				Slider.Title.Text = Name
+				Slider.Slider.Bar.Size = UDim2.new(Min / Max,0,1,0)
+				Slider.Slider.Bar.BackgroundColor3 = Config.Color
+				Slider.Value.PlaceholderText = tostring(Min / Max)
+				Slider.Title.Size = UDim2.new(1,0,0,Slider.Title.TextBounds.Y + 5)
+				Slider.Size = UDim2.new(1,-10,0,Slider.Title.TextBounds.Y + 15)
+				table.insert(Library.ColorTable, Slider.Slider.Bar)
+
+				local GlobalSliderValue = 0
+				local Dragging = false
+				local function Sliding(Input)
+                    local Position = UDim2.new(math.clamp((Input.Position.X - Slider.Slider.AbsolutePosition.X) / Slider.Slider.AbsoluteSize.X,0,1),0,1,0)
+                    Slider.Slider.Bar.Size = Position
+					local SliderPrecise = ((Position.X.Scale * Max) / Max) * (Max - Min) + Min
+					local SliderNonPrecise = math.floor(((Position.X.Scale * Max) / Max) * (Max - Min) + Min)
+                    local SliderValue = Precise and SliderNonPrecise or SliderPrecise
+					SliderValue = tonumber(string.format("%.2f", SliderValue))
+					GlobalSliderValue = SliderValue
+                    Slider.Value.PlaceholderText = tostring(SliderValue)
+                    Callback(GlobalSliderValue)
                 end
-    
-                SliderButton.MouseButton1Down:Connect(function()
-                    Enabled = true
-                end)
-    
-                UIS.InputEnded:Connect(function(Input)
+				local function SetValue(Value)
+					GlobalSliderValue = Value
+					Slider.Slider.Bar.Size = UDim2.new(Value / Max,0,1,0)
+					Slider.Value.PlaceholderText = Value
+					Callback(Value)
+				end
+				Slider.Value.FocusLost:Connect(function()
+					if not tonumber(Slider.Value.Text) then
+						Slider.Value.Text = GlobalSliderValue
+					elseif Slider.Value.Text == "" or tonumber(Slider.Value.Text) <= Min then
+						Slider.Value.Text = Min
+					elseif Slider.Value.Text == "" or tonumber(Slider.Value.Text) >= Max then
+						Slider.Value.Text = Max
+					end
+		
+					GlobalSliderValue = Slider.Value.Text
+					Slider.Slider.Bar.Size = UDim2.new(Slider.Value.Text / Max,0,1,0)
+					Slider.Value.PlaceholderText = Slider.Value.Text
+					Callback(tonumber(Slider.Value.Text))
+					Slider.Value.Text = ""
+				end)
+
+				Slider.InputBegan:Connect(function(Input)
                     if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        Enabled = false
+                        Sliding(Input)
+						Dragging = true
                     end
                 end)
-    
-                RS.RenderStepped:Connect(function()
-                    local Mouse = PL.LocalPlayer:GetMouse()
-                    
-                    if Enabled then
-                        local Percentage = math.clamp((Mouse.X - Slider.AbsolutePosition.X) / Slider.AbsoluteSize.X, 0, 1)
-                        local Value = ((Max - Min) * Percentage) + Min
-    
-                        if not Precise then
-                            Value = math.round(Value)
-                            SliderValueText.Text = Value
-                            SliderFrameDetailValueText.Text = Value
-                        else
-                            SliderValueText.Text = string.format("%.03f", Value)
-                            SliderFrameDetailValueText.Text = string.format("%.03f", Value)
-                        end
-    
-    
-                        local SFDY = SliderFrameDetail.Size.Y
-                        TS:Create(SliderFrameDetail, TweenInfo.new(0.2, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Size = UDim2.new(Percentage, 0, SFDY.Scale, SFDY.Offset)}):Play()
-    
-                        pcall(Callback, Value)
+
+				Slider.InputEnded:Connect(function(Input)
+                    if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+						Dragging = false
                     end
                 end)
-            end
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if Input.KeyCode == Enum.KeyCode.LeftControl then
+						Slider.Value.ZIndex = 4
+					end
+				end)
+
+				UserInputService.InputEnded:Connect(function(Input)
+					if Input.KeyCode == Enum.KeyCode.LeftControl then
+						Slider.Value.ZIndex = 3
+					end
+				end)
+
+				UserInputService.InputChanged:Connect(function(Input)
+					if Dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then
+						Sliding(Input)
+					end
+				end)
+
+				function SliderInit:AddToolTip(Name)
+					if tostring(Name):gsub(" ", "") ~= "" then
+						Slider.MouseEnter:Connect(function()
+							Screen.ToolTip.Text = Name
+							Screen.ToolTip.Size = UDim2.new(0,Screen.ToolTip.TextBounds.X + 5,0,Screen.ToolTip.TextBounds.Y + 5)
+							Screen.ToolTip.Visible = true
+						end)
+
+						Slider.MouseLeave:Connect(function()
+							Screen.ToolTip.Visible = false
+						end)
+					end
+				end
+
+				if Default == nil then
+					function SliderInit:SetValue(Value)
+						GlobalSliderValue = Value
+						Slider.Slider.Bar.Size = UDim2.new(Value / Max,0,1,0)
+						Slider.Value.PlaceholderText = Value
+						Callback(Value)
+					end
+				else
+					SetValue(DefaultLocal)
+				end
+
+				function SliderInit:GetValue(Value)
+					return GlobalSliderValue
+				end
+
+				return SliderInit
+			end
     
             function SFeatures:Dropdown(DropdownName, Callback, Data, Options)
                 local DropdownFeatures = {}
