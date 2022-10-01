@@ -1,28 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@Narnia1337 
-AlexR32
-/
-Roblox
-Public
-Code
-Issues
-Pull requests
-Security
-Insights
-Roblox/BracketV3.lua
-@AlexR32
-AlexR32 Add files via upload
-Latest commit e534fca on Dec 31, 2021
- History
- 1 contributor
-781 lines (691 sloc)  25.4 KB
-
 local Library = {Toggle = true,FirstTab = nil,TabCount = 0,ColorTable = {}}
 
 local RunService = game:GetService("RunService")
@@ -804,18 +779,3 @@ function Library:CreateWindow(Config, Parent)
 end
 
 return Library
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-Roblox/BracketV3.lua at main · AlexR32/Roblox
