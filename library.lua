@@ -330,6 +330,8 @@ function Library:Create(ScriptName)
             })
             
             function SFeatures:Label(LabelInfo)
+                local LabelFeatures = {}
+                
                 local Label = Create("TextLabel", SectionContainer, {
                     Name = "Label",
                     Size = UDim2.new(0.95, 0, 0, 999),
@@ -348,6 +350,12 @@ function Library:Create(ScriptName)
                 end)
     
                 Label.Text = LabelInfo
+            
+                function LabelFeatures:UpdateLabel(LabelInfo)
+                    Label.Text = LabelInfo
+                end
+
+                return LabelFeatures
             end
 
             function SFeatures:Button(ButtonName, Callback)
