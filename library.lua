@@ -131,7 +131,7 @@ function Library:Create(ScriptName)
     local _ = Create("Frame", GUI, {
         Name = "_",
         AnchorPoint = Vector2.new(0.5, 0.5),
-        Size = UDim2.new(0, 500, 0, 300),
+        Size = UDim2.new(0, 600, 0, 400),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         BackgroundTransparency = 1,
     })
@@ -165,7 +165,7 @@ function Library:Create(ScriptName)
         Name = "Title",
         AnchorPoint = Vector2.new(0.5, 0.5),
         Size = UDim2.new(0, 125, 0, 25),
-        Position = UDim2.new(0.152, 0, 0.063, 0),
+        Position = UDim2.new(0.123, 0, 0.047, 0),
         BackgroundTransparency = 1,
         Font = Enum.Font["GothamMedium"],
         Text = ScriptName,
@@ -177,8 +177,8 @@ function Library:Create(ScriptName)
     local List = Create("Frame", Main, {
         Name = "List",
         AnchorPoint = Vector2.new(0.5, 0.5),
-        Size = UDim2.new(0, 110, 0, 245),
-        Position = UDim2.new(0.138, 0, 0.542, 0),
+        Size = UDim2.new(0, 110, 0, 350),
+        Position = UDim2.new(0.11, 0, 0.535, 0),
         BackgroundColor3 = Color3.fromRGB(30, 30, 30),
     })
 
@@ -228,8 +228,8 @@ function Library:Create(ScriptName)
         local TabFrame = Create("Frame", Main, {
             Name = TabName,
             AnchorPoint = Vector2.new(0.5, 0.5),
-            Size = UDim2.new(0, 350, 0, 245),
-            Position = UDim2.new(0.622, 0, 0.542, 0),
+            Size = UDim2.new(0, 455, 0, 350),
+            Position = UDim2.new(0.6, 0, 0.535, 0),
             BackgroundColor3 = Color3.fromRGB(30, 30, 30),
         })
 
@@ -279,6 +279,8 @@ function Library:Create(ScriptName)
         UIL:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateSize)
         
         function TFeatures:Info(LabelInfo)
+            local LabelFeatures = {}
+
             local Label = Create("TextLabel", TabContainer, {
                 Name = "Label",
                 Size = UDim2.new(0.95, 0, 0, 999),
@@ -297,6 +299,12 @@ function Library:Create(ScriptName)
             end)
 
             Label.Text = LabelInfo
+
+            function LabelFeatures:GetObject()
+                return Label
+            end
+
+            return LabelFeatures
         end
 
         function TFeatures:Section(SectionInfo)
@@ -355,10 +363,16 @@ function Library:Create(ScriptName)
                     Label.Text = LabelInfo
                 end
 
+                function LabelFeatures:GetObject()
+                    return Label
+                end
+
                 return LabelFeatures
             end
 
             function SFeatures:Button(ButtonName, Callback)
+                local ButtonFeatures = {}
+
                 local Button = Create("TextButton", SectionContainer, {
                     Name = ButtonName,
                     Size = UDim2.new(1, 0, 0, 25),
@@ -390,9 +404,15 @@ function Library:Create(ScriptName)
                     TS:Create(Button, TweenInfo.new(0.25), {BackgroundTransparency = 1}):Play()
                     pcall(Callback)
                 end)
+
+                function ButtonFeatures:GetObject()
+                    return Button
+                end
             end
     
             function SFeatures:Box(BoxName, Callback)
+                local BoxFeatures = {}
+
                 local Frame = Create("Frame", SectionContainer, {
                     Name = BoxName,
                     Size = UDim2.new(0.95, 0, 0, 25),
@@ -467,6 +487,12 @@ function Library:Create(ScriptName)
                         end
                     end
                 end)
+
+                function BoxFeatures:GetObject()
+                    return Box
+                end
+
+                return BoxFeatures
             end
     
             local ToggleColors = {
@@ -475,6 +501,7 @@ function Library:Create(ScriptName)
             }
     
             function SFeatures:Toggle(ToggleName, Callback, Options)
+                local ToggleFeatures = {}
                 local Enabled = false
     
                 local Frame = Create("Frame", SectionContainer, {
@@ -534,9 +561,14 @@ function Library:Create(ScriptName)
                     game:GetService("TweenService"):Create(Toggle, TweenInfo.new(0.2), {BackgroundColor3 = ToggleColors[Enabled]}):Play()
                     pcall(Callback, Enabled)
                 end)
+
+                function ToggleFeatures:GetObject()
+                    return Toggle
+                end
             end
     
             function SFeatures:Slider(SliderName, Callback, Options)
+                local SliderFeatures = {}
                 local Min = 0
                 local Max = 1
                 local Precise = false
@@ -684,6 +716,12 @@ function Library:Create(ScriptName)
                         pcall(Callback, Value)
                     end
                 end)
+
+                function SliderFeatures:GetObject()
+                    return Slider
+                end
+            
+                return SliderFeatures
             end
     
             function SFeatures:Dropdown(DropdownName, Data, Callback, Options)
@@ -910,6 +948,10 @@ function Library:Create(ScriptName)
                         end
                     end
                 end
+
+                function DropdownFeatures:GetObject()
+                    return Dropdown
+                end
                 
                 return DropdownFeatures
             end
@@ -930,7 +972,8 @@ function Library:Create(ScriptName)
 
     UIS.InputBegan:Connect(function(Input, GPE)
         if Input.KeyCode == Enum.KeyCode[UI["KeybindValue"]] and not GPE then
-            GUI.Enabled = not GUI.Enabled
+            -- GUI.Enabled = not GUI.Enabled
+            UI:Destroy()
         end
     end)
     
