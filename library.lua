@@ -745,7 +745,7 @@ function Library:Create(ScriptName)
     
                 local DropdownContainer = Create("ScrollingFrame", Dropdown, {
                     Name = "DropdownContainer",
-                    Size = UDim2.new(1, 0, 0, 60),
+                    Size = UDim2.new(1, 0, 0, 100),
                     BackgroundTransparency = 1,
                     CanvasSize = UDim2.new(0, 0, 0, 0),
                     ScrollBarImageTransparency = 1,
@@ -777,8 +777,8 @@ function Library:Create(ScriptName)
                         local DSizeY = Dropdown.Size.Y
                         local FSizeX = Frame.Size.X
                         local FSizeY = Frame.Size.Y
-                        TS:Create(Dropdown, TweenInfo.new(0.3, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Size = UDim2.new(DSizeX.Scale, DSizeX.Offset, DSizeY.Scale, 80)}):Play()
-                        TS:Create(Frame, TweenInfo.new(0.3, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Size = UDim2.new(FSizeX.Scale, FSizeX.Offset, FSizeY.Scale, 85)}):Play()
+                        TS:Create(Dropdown, TweenInfo.new(0.3, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Size = UDim2.new(DSizeX.Scale, DSizeX.Offset, DSizeY.Scale, 120)}):Play()
+                        TS:Create(Frame, TweenInfo.new(0.3, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Size = UDim2.new(FSizeX.Scale, FSizeX.Offset, FSizeY.Scale, 125)}):Play()
                         TS:Create(DropdownContainer, TweenInfo.new(0.3), {ScrollBarImageTransparency = 0}):Play()
                         DropdownContainer.ScrollingEnabled = true
                     end
