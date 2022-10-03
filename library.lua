@@ -972,8 +972,7 @@ function Library:Create(ScriptName)
 
     UIS.InputBegan:Connect(function(Input, GPE)
         if Input.KeyCode == Enum.KeyCode[UI["KeybindValue"]] and not GPE then
-            -- GUI.Enabled = not GUI.Enabled
-            UI:Destroy()
+            GUI.Enabled = not GUI.Enabled
         end
     end)
     
