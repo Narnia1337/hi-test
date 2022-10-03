@@ -479,12 +479,10 @@ function Library:Create(ScriptName)
                  
                 Box:GetPropertyChangedSignal("TextBounds"):Connect(UpdateSize)
     
-                Box.FocusLost:Connect(function(EP)
-                    if EP then
-                        if Box.Text ~= "" then
-                            pcall(Callback, Box.Text)
-                            Box.Text = ""
-                        end
+                Box.FocusLost:Connect(function()
+                    if Box.Text ~= "" then
+                        pcall(Callback, Box.Text)
+                        Box.Text = ""
                     end
                 end)
 
