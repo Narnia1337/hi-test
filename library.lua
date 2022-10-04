@@ -408,6 +408,8 @@ function Library:Create(ScriptName)
                 function ButtonFeatures:GetObject()
                     return Button
                 end
+                
+                return ButtonFeatures
             end
     
             function SFeatures:Box(BoxName, Callback)
@@ -563,6 +565,12 @@ function Library:Create(ScriptName)
                 function ToggleFeatures:GetObject()
                     return Toggle
                 end
+                
+                function ToggleFeatures:GetValue()
+                    return Enabled
+                end
+                
+                return ToggleFeatures
             end
     
             function SFeatures:Slider(SliderName, Callback, Options)
