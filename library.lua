@@ -570,6 +570,21 @@ function Library:Create(ScriptName)
                     return Enabled
                 end
                 
+                function ToggleFeatures:SetValue(Value)
+                    Enabled = Value
+                    game:GetService("TweenService"):Create(Toggle, TweenInfo.new(0.2), {BackgroundColor3 = ToggleColors[Enabled]}):Play()
+                    pcall(Callback, Enabled)
+                end
+                
+                function ToggleFeatures:SetColorValues(ColorValues)
+                    if ColorValues[true] then
+                        ToggleColors[true] = ColorValues[true]
+                    end
+                    if ColorValues[false] then
+                        ToggleColors[false] = ColorValues[false]
+                    end
+                end
+                
                 return ToggleFeatures
             end
     
@@ -579,6 +594,7 @@ function Library:Create(ScriptName)
                 local Max = 1
                 local Precise = false
                 local Enabled = false
+                local Value;
     
                 local Frame = Create("Frame", SectionContainer, {
                     Name = SliderName,
@@ -675,12 +691,14 @@ function Library:Create(ScriptName)
                     if Options.Default then
                         if Precise then
                             Options.Default = tonumber(string.format("%.03f", Options.Default))
+                            Value = Options.Default
                             local Scale = math.clamp((Options.Default - Min) / (Max - Min), 0, 1)
                             SliderFrameDetail.Size = UDim2.new(Scale, 0, 0.98, 0)
                             SliderValueText.Text = Options.Default
                             SliderFrameDetailValueText.Text = Options.Default
                         else
                             Options.Default = math.round(Options.Default)
+                            Value = Options.Default
                             local Scale = math.clamp((Options.Default - Min) / (Max - Min), 0, 1)
                             SliderFrameDetail.Size = UDim2.new(Scale, 0, 0.98, 0)
                             SliderValueText.Text = Options.Default
@@ -704,7 +722,7 @@ function Library:Create(ScriptName)
                     
                     if Enabled then
                         local Percentage = math.clamp((Mouse.X - Slider.AbsolutePosition.X) / Slider.AbsoluteSize.X, 0, 1)
-                        local Value = ((Max - Min) * Percentage) + Min
+                        Value = ((Max - Min) * Percentage) + Min
     
                         if not Precise then
                             Value = math.round(Value)
@@ -725,6 +743,27 @@ function Library:Create(ScriptName)
 
                 function SliderFeatures:GetObject()
                     return Slider
+                end
+                
+                function SliderFeatures:GetValue()
+                    return Value
+                end
+                
+                function SliderFeatures:SetValue(Input)
+                    local Scale = math.clamp((Input - Min) / (Max - Min), 0, 1)
+                    Value = ((Max - Min) * Scale) + Min
+                    
+                    if not Precise then
+                        Value = math.round(Value)
+                        SliderValueText.Text = Value
+                        SliderFrameDetailValueText.Text = Value
+                    else
+                        SliderValueText.Text = string.format("%.03f", Value)
+                        SliderFrameDetailValueText.Text = string.format("%.03f", Value)
+                    end
+                    
+                    local SFDY = SliderFrameDetail.Size.Y
+                    TS:Create(SliderFrameDetail, TweenInfo.new(0.2, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Size = UDim2.new(Percentage, 0, SFDY.Scale, SFDY.Offset)}):Play()
                 end
             
                 return SliderFeatures
