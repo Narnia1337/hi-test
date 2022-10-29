@@ -185,7 +185,7 @@ function Library:Create(ScriptName)
         return UIGradient
     end
     
-    local GUI = Create("ScreenGui", game:GetService("CoreGui"), {
+    local GUI = Create("ScreenGui", {
         Name = "simple",
         IgnoreGuiInset = true,
         ResetOnSpawn = true,
@@ -193,6 +193,7 @@ function Library:Create(ScriptName)
 
     if syn then
         syn.protect_gui(GUI)
+        GUI.Parent = game:GetService("CoreGui")
     end
 
     local _ = Create("Frame", GUI, {
